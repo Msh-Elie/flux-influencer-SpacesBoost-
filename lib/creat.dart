@@ -59,7 +59,7 @@ class _CreatContentState extends State<CreatContent> {
                 child: const SizedBox.expand(),
               ),
             ),
-          if (_showSocialPopup) _buildSocialPopup(),
+          if (_showSocialPopup) _buildEligibilityPopup(),
         ],
       );
     }
@@ -67,7 +67,8 @@ class _CreatContentState extends State<CreatContent> {
     return _buildListView();
   }
 
-  Widget _buildSocialPopup() {
+  // ─── NOUVELLE POPUP (photo 1) ──────────────────────────────────────────────
+  Widget _buildEligibilityPopup() {
     return Positioned.fill(
       child: Material(
         color: Colors.black.withOpacity(0.5),
@@ -85,7 +86,7 @@ class _CreatContentState extends State<CreatContent> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'Choisissez vos réseaux\nsociaux',
+                    "Ajouter des informations",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color(0xFF1DA858),
@@ -94,32 +95,39 @@ class _CreatContentState extends State<CreatContent> {
                       fontFamily: 'Poppins',
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 170),
-                    child: const Text(
-                      'Vos canaux',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        height: 1.0,
-                        color: Color(0xFF052859),
-                      ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Justifiant votre éligibilité\npour cette offre",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      height: 1.3,
+                      color: Color(0xFF000000),
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildSocialIcon('assets/logos_whatsapp.png', 'whatsapp'),
-                      _buildSocialIcon('assets/logos_facebook.png', 'facebook'),
-                      _buildSocialIcon('assets/logos_tiktok.png', 'tiktok'),
-                      _buildSocialIcon(
-                        'assets/logos_instagram.png',
-                        'instagram',
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blue.shade800, width: 1.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Sélectionner un fichier',
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey.shade600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const Icon(Icons.attach_file, color: Color(0xFF052859)),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 30),
                   Row(
@@ -141,11 +149,7 @@ class _CreatContentState extends State<CreatContent> {
                         onTap: () {
                           setState(() => _showSocialPopup = false);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Demande de création envoyée (simulation)',
-                              ),
-                            ),
+                            const SnackBar(content: Text('Demande envoyée avec succès !')),
                           );
                         },
                         child: Container(
@@ -157,7 +161,7 @@ class _CreatContentState extends State<CreatContent> {
                           ),
                           child: const Center(
                             child: Text(
-                              'Valider',
+                              'Envoyer',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -179,40 +183,7 @@ class _CreatContentState extends State<CreatContent> {
     );
   }
 
-  Widget _buildSocialIcon(String assetPath, String id) {
-    final bool selected = _selectedSocial == id;
-    return InkWell(
-      onTap: () => setState(() => _selectedSocial = id),
-      child: Container(
-        width: 54,
-        height: 54,
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: selected
-              ? Border.all(color: const Color(0xFF052859), width: 2)
-              : null,
-          boxShadow: selected
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Image.asset(
-          assetPath,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.broken_image, color: Colors.grey),
-        ),
-      ),
-    );
-  }
-
+  // ─── VUE LISTE ──────────────────────────────────────────────────────────────
   Widget _buildListView() {
     return SingleChildScrollView(
       padding: const EdgeInsets.only(top: 29, bottom: 29),
@@ -299,6 +270,7 @@ class _CreatContentState extends State<CreatContent> {
     );
   }
 
+  // ─── VUE DÉTAIL ─────────────────────────────────────────────────────────────
   Widget _buildDetailView() {
     return SingleChildScrollView(
       child: Container(

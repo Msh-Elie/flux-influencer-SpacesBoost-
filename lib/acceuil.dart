@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'campagne.dart';
 import 'parrainage.dart';
+import 'proof.dart' as proof_page;
+import 'wallet.dart';
 import 'profil.dart';
 
 class SpaBoostSecondPage extends StatefulWidget {
@@ -214,9 +216,10 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
       },
     ];
 
-    // CampagneContent gère son propre scroll via Column + Expanded.
+    // Campagne et Preuve gèrent leur propre scroll via Column + Expanded.
     // Les autres onglets utilisent un SingleChildScrollView classique.
-    final bool isCampagne = _activeNavIndex == 0;
+    final bool usesInternalScroll = _activeNavIndex == 0 || _activeNavIndex == 1;
+    final String headerTitle = _activeNavIndex == 1 ? 'Preuve' : 'Annonce';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -228,13 +231,16 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
             left: 0,
             right: 0,
             bottom: _showDetailView ? 0 : 110,
-            child: isCampagne
-                // Campagne : occupe directement le Positioned (gère son propre scroll)
-                ? CampagneContent(
-                    onDetailViewChanged: (isShowingDetail) {
-                      setState(() => _showDetailView = isShowingDetail);
-                    },
-                  )
+            child: usesInternalScroll
+                ? (_activeNavIndex == 0
+                    // Campagne : occupe directement le Positioned (gère son propre scroll)
+                    ? CampagneContent(
+                        onDetailViewChanged: (isShowingDetail) {
+                          setState(() => _showDetailView = isShowingDetail);
+                        },
+                      )
+                    // Preuve : garde la même structure (header/footer) que la page principale.
+                    : const proof_page.CampagneContent())
                 // Autres onglets : scroll classique
                 : SingleChildScrollView(child: _buildOtherContent()),
           ),
@@ -296,7 +302,14 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
                     final item = navItems[index];
                     final bool isActive = _activeNavIndex == index;
                     return GestureDetector(
-                      onTap: () => setState(() => _activeNavIndex = index),
+                      onTap: () {
+                        setState(() {
+                          _activeNavIndex = index;
+                          if (index != 0) {
+                            _showDetailView = false;
+                          }
+                        });
+                      },
                       child: _NavItem(
                         assetPath: item['assetPath'] as String,
                         fallbackIcon: item['fallbackIcon'] as IconData,
@@ -343,7 +356,7 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  'Annonce',
+                  headerTitle,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     color: _navy,
@@ -370,11 +383,11 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
   Widget _buildOtherContent() {
     switch (_activeNavIndex) {
       case 1:
-        return const SizedBox.shrink(); // Preuve
+        return const proof_page.CampagneContent(); // Preuve
       case 2:
         return _buildAccueilContent();
       case 3:
-        return const SizedBox.shrink(); // Retrait
+        return const PortefeuilleContent(); // Retrait
       case 4:
         return const ParrainagePage(); // Parrainage
       default:
