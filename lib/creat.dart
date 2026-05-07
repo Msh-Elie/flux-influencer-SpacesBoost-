@@ -1,152 +1,134 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AnnonceContent extends StatefulWidget {
-  final Function(bool)? onDetailViewChanged;
-
-  const AnnonceContent({super.key, this.onDetailViewChanged});
+class CreatContent extends StatefulWidget {
+  const CreatContent({super.key});
 
   @override
-  State<AnnonceContent> createState() => _AnnonceContentState();
+  State<CreatContent> createState() => _CreatContentState();
 }
 
-class _AnnonceContentState extends State<AnnonceContent> {
+class _CreatContentState extends State<CreatContent> {
   bool _showDetail = false;
-  bool _showSocialPopup = false; // NOUVEAU : Pour contrôler l'affichage de la popup
-  String? _selectedSocial = 'facebook'; // id of selected social (shows border)
+  bool _showSocialPopup = false;
+  String? _selectedSocial = 'facebook';
 
   static const Color _navy = Color(0xFF052859);
   static const Color _white = Color(0xFFFFFFFF);
 
-  // ---------- Réglages modifiables (liste) ----------
   static const double cadreLargeur = 364;
   static const double texteLargeur = 318;
   static const double espaceEntreCadres = 50;
 
-  static const List<Map<String, String>> _annonces = [
+  static const List<Map<String, String>> _creations = [
     {
-      'image': 'assets/annonce1.png',
+      'image': 'assets/annonce3.png',
       'texte':
-          "Devenez agent de liaison avec Harnix Event et tentez de gagner jusqu'à 30 % sur les achats effectués ! .....",
-    },
-    {
-      'image': 'assets/annonce2.png',
-      'texte':
-          "Découvrez les délices d'Axo Food ! Savourez des repas préparés avec soin, alliant qualité et fraîcheur, pour une expérience culinaire inoubliable.",
+          'Créez rapidement des contenus visuels percutants et adaptez vos messages pour chaque campagne.',
     },
     {
       'image': 'assets/annonce3.png',
       'texte':
-          "Découvrez les délices d'Axo Food ! Savourez des repas préparés avec soin, alliant qualité et fraîcheur, pour une expérience culinaire inoubliable.",
+          'Produisez des visuels cohérents, modernes et optimisés pour attirer davantage d’attention.',
+    },
+    {
+      'image': 'assets/header_image.png',
+      'texte':
+          'Centralisez vos idées de création et gagnez du temps dans la préparation de vos contenus.',
     },
   ];
 
   void _openDetail() {
     setState(() => _showDetail = true);
-    widget.onDetailViewChanged?.call(true);
   }
 
   void _closeDetail() {
     setState(() => _showDetail = false);
-    widget.onDetailViewChanged?.call(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Si on doit afficher le détail ET la popup sociale, on empile le tout
     if (_showDetail) {
       return Stack(
         children: [
-          // Contenu de détail
           _buildDetailView(),
-          // Couche bloquante transparente si popup active
           if (_showSocialPopup)
             Positioned.fill(
               child: GestureDetector(
-                onTap: () {}, // Bloque les interactions
+                onTap: () {},
                 child: const SizedBox.expand(),
               ),
             ),
-          // Popup modale (si activée)
           if (_showSocialPopup) _buildSocialPopup(),
         ],
       );
     }
+
     return _buildListView();
   }
 
-  // -------- NOUVEAU : POPUP RÉSEAUX SOCIAUX --------
   Widget _buildSocialPopup() {
     return Positioned.fill(
       child: Material(
-        color: Colors.black.withOpacity(0.5), // Fond grisé plein écran
+        color: Colors.black.withOpacity(0.5),
         child: Center(
           child: Transform.translate(
             offset: const Offset(0, 60),
             child: Container(
-            width: 340,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Titre vert
-                const Text(
-                  "Choisissez vos réseaux\nsociaux",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF1DA858), // Vert foncé
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Sous-titre (left offset 64px, Poppins w600 16px, no blue container)
-                Padding(
-                  padding: const EdgeInsets.only(right: 170),
-                  child: const Text(
-                    'Vos caneaux',
+              width: 340,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Choisissez vos réseaux\nsociaux',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
+                      color: Color(0xFF1DA858),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                       fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      height: 1.0,
-                      color: Color(0xFF052859),
                     ),
                   ),
-                ),
-                const SizedBox(height: 15),
-
-                // Les 4 icônes (images assets)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildSocialIcon('assets/logos_whatsapp.png', 'whatsapp'),
-                    _buildSocialIcon('assets/logos_facebook.png', 'facebook'),
-                    _buildSocialIcon('assets/logos_tiktok.png', 'tiktok'),
-                    _buildSocialIcon('assets/logos_instagram.png', 'instagram'),
-                  ],
-                ),
-                const SizedBox(height: 30),
-
-                // Boutons Annuler / Valider
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
-                  child: Row(
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 170),
+                    child: const Text(
+                      'Vos canaux',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        height: 1.0,
+                        color: Color(0xFF052859),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildSocialIcon('assets/logos_whatsapp.png', 'whatsapp'),
+                      _buildSocialIcon('assets/logos_facebook.png', 'facebook'),
+                      _buildSocialIcon('assets/logos_tiktok.png', 'tiktok'),
+                      _buildSocialIcon(
+                        'assets/logos_instagram.png',
+                        'instagram',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // BOUTON ANNULER
                       InkWell(
-                        onTap: () {
-                          setState(() => _showSocialPopup = false);
-                        },
+                        onTap: () => setState(() => _showSocialPopup = false),
                         child: const Text(
-                          "Annuler",
+                          'Annuler',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 14,
@@ -155,25 +137,27 @@ class _AnnonceContentState extends State<AnnonceContent> {
                           ),
                         ),
                       ),
-                      // BOUTON VALIDER
                       InkWell(
                         onTap: () {
-                          // Action quand on clique sur Valider (ex: envoyer les choix)
                           setState(() => _showSocialPopup = false);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Postulation envoyée (simulation)")),
+                            const SnackBar(
+                              content: Text(
+                                'Demande de création envoyée (simulation)',
+                              ),
+                            ),
                           );
                         },
                         child: Container(
                           width: 100,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFC107), // Jaune
+                            color: const Color(0xFFFFC107),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: const Center(
                             child: Text(
-                              "Valider",
+                              'Valider',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -186,17 +170,15 @@ class _AnnonceContentState extends State<AnnonceContent> {
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           ),
         ),
       ),
     );
   }
 
-  // Widget pour simplifier la création des icônes sociales
   Widget _buildSocialIcon(String assetPath, String id) {
     final bool selected = _selectedSocial == id;
     return InkWell(
@@ -208,7 +190,9 @@ class _AnnonceContentState extends State<AnnonceContent> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: selected ? Border.all(color: const Color(0xFF052859), width: 2) : null,
+          border: selected
+              ? Border.all(color: const Color(0xFF052859), width: 2)
+              : null,
           boxShadow: selected
               ? [
                   BoxShadow(
@@ -222,23 +206,23 @@ class _AnnonceContentState extends State<AnnonceContent> {
         child: Image.asset(
           assetPath,
           fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, color: Colors.grey),
+          errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.broken_image, color: Colors.grey),
         ),
       ),
     );
   }
 
-  // -------- VUE LISTE (tous les cadres) --------
   Widget _buildListView() {
     return SingleChildScrollView(
       padding: const EdgeInsets.only(top: 29, bottom: 29),
       child: Column(
-        children: List.generate(_annonces.length, (index) {
-          final annonce = _annonces[index];
+        children: List.generate(_creations.length, (index) {
+          final creation = _creations[index];
           final bool isFirst = index == 0;
           return Padding(
             padding: EdgeInsets.only(
-              bottom: index < _annonces.length - 1 ? espaceEntreCadres : 0,
+              bottom: index < _creations.length - 1 ? espaceEntreCadres : 0,
             ),
             child: GestureDetector(
               onTap: isFirst ? _openDetail : null,
@@ -267,7 +251,7 @@ class _AnnonceContentState extends State<AnnonceContent> {
                           topRight: Radius.circular(8),
                         ),
                         child: Image.asset(
-                          annonce['image']!,
+                          creation['image']!,
                           width: cadreLargeur,
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) {
@@ -290,7 +274,7 @@ class _AnnonceContentState extends State<AnnonceContent> {
                         child: SizedBox(
                           width: texteLargeur,
                           child: Text(
-                            annonce['texte']!,
+                            creation['texte']!,
                             textAlign: TextAlign.center,
                             maxLines: 5,
                             overflow: TextOverflow.ellipsis,
@@ -315,7 +299,6 @@ class _AnnonceContentState extends State<AnnonceContent> {
     );
   }
 
-  // -------- VUE DÉTAIL (premier cadre cliqué) --------
   Widget _buildDetailView() {
     return SingleChildScrollView(
       child: Container(
@@ -329,22 +312,22 @@ class _AnnonceContentState extends State<AnnonceContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 29),
-
-            // Bouton Fermer en haut à gauche
             Padding(
               padding: const EdgeInsets.only(left: 21),
               child: GestureDetector(
                 onTap: _closeDetail,
-                child: const Icon(Icons.arrow_back, color: Color(0xFF052859), size: 24),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Color(0xFF052859),
+                  size: 24,
+                ),
               ),
             ),
             const SizedBox(height: 12),
-
-            // Image (388 de large)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: Image.asset(
-                'assets/annonce1.png',
+                'assets/annonce3.png',
                 width: 388,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
@@ -358,17 +341,11 @@ class _AnnonceContentState extends State<AnnonceContent> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Texte principal
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: Text(
-                "Devenez agent de liaison avec Harnix Event et tentez de gagner jusqu'à 30 % sur les achats effectués ! "
-                "Rejoignez notre réseau dynamique et profitez d'opportunités uniques pour développer votre activité. "
-                "En collaborant avec nous, vous aurez accès à des événements exclusifs, des promotions attractives "
-                "et la possibilité de bâtir des relations solides avec des clients et partenaires. "
-                "Ne manquez pas cette chance de maximiser vos revenus tout en offrant à vos contacts des expériences inoubliables. "
-                "Inscrivez-vous dès aujourd'hui et commencez à transformer vos connexions en profits !",
+                'Créez des contenus adaptés à votre image de marque et facilitez la diffusion de vos messages sur tous vos canaux. '
+                'Cette section vous aide à produire des supports clairs, cohérents et efficaces pour vos campagnes.',
                 textAlign: TextAlign.justify,
                 style: GoogleFonts.poppins(
                   color: const Color(0xFF000000),
@@ -380,12 +357,10 @@ class _AnnonceContentState extends State<AnnonceContent> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Informations supplémentaires
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: Text(
-                "Informations supplémentaires :",
+                'Informations supplémentaires :',
                 style: GoogleFonts.poppins(
                   color: const Color(0xFF000000),
                   fontSize: 12,
@@ -397,18 +372,14 @@ class _AnnonceContentState extends State<AnnonceContent> {
               ),
             ),
             const SizedBox(height: 12),
-            _buildDetailLine("• Nombre d'influenceurs recherchés", "100"),
-            _buildDetailLine("• Date de début de la campagne", "12 mai 2024"),
-            _buildDetailLine("• Durée", "60 jours"),
-            _buildDetailLine("• Budget alloué", "1.000.000"),
-
+            _buildDetailLine('• Type de création', 'Visuels et contenus'),
+            _buildDetailLine('• Date de lancement', '12 mai 2024'),
+            _buildDetailLine('• Durée', 'Flexible'),
+            _buildDetailLine('• Budget alloué', '300.000'),
             const SizedBox(height: 75),
-
-            // Bouton Postuler
             Center(
               child: GestureDetector(
                 onTap: () {
-                  // Action à définir -> OUVRE LA POPUP
                   setState(() {
                     _showSocialPopup = true;
                   });
@@ -422,7 +393,7 @@ class _AnnonceContentState extends State<AnnonceContent> {
                   ),
                   child: Center(
                     child: Text(
-                      'Postuler',
+                      'Soumettre ma candidature',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: _white,
@@ -456,7 +427,7 @@ class _AnnonceContentState extends State<AnnonceContent> {
           ),
           children: [
             TextSpan(
-              text: "$label : ",
+              text: '$label : ',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             TextSpan(

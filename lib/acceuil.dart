@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'campagne.dart';
+import 'parrainage.dart';
 import 'profil.dart';
 
 class SpaBoostSecondPage extends StatefulWidget {
@@ -13,6 +14,8 @@ class SpaBoostSecondPage extends StatefulWidget {
 class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
   bool _isBalanceVisible = false;
   int _activeNavIndex = 2;
+  final double _balance = 500000;
+  bool _showDetailView = false;
 
   final PageController _pageController = PageController();
   int _currentImageIndex = 0;
@@ -108,7 +111,7 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Afficher solde',
+                    _isBalanceVisible ? '${_balance.toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ' ')} XOF' : 'Afficher solde',
                     style: GoogleFonts.poppins(
                       color: _white,
                       fontSize: 20,
@@ -224,10 +227,14 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
             top: 103,
             left: 0,
             right: 0,
-            bottom: 110,
+            bottom: _showDetailView ? 0 : 110,
             child: isCampagne
                 // Campagne : occupe directement le Positioned (gère son propre scroll)
-                ? const CampagneContent()
+                ? CampagneContent(
+                    onDetailViewChanged: (isShowingDetail) {
+                      setState(() => _showDetailView = isShowingDetail);
+                    },
+                  )
                 // Autres onglets : scroll classique
                 : SingleChildScrollView(child: _buildOtherContent()),
           ),
@@ -253,55 +260,57 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
           ),
 
           // ── Rectangle jaune FIXE en bas ──
-          Positioned(
-            bottom: 0,
-            left: -23,
-            child: Container(
-              width: 467,
-              height: 110,
-              decoration: BoxDecoration(
-                color: _yellow,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF000000).withOpacity(0.25),
-                    offset: const Offset(0, -4),
-                    blurRadius: 4,
-                  ),
-                ],
+          if (!_showDetailView)
+            Positioned(
+              bottom: 0,
+              left: -23,
+              child: Container(
+                width: 467,
+                height: 110,
+                decoration: BoxDecoration(
+                  color: _yellow,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF000000).withOpacity(0.25),
+                      offset: const Offset(0, -4),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
           // ── Navbar du bas ──
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 110,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: List.generate(navItems.length, (index) {
-                  final item = navItems[index];
-                  final bool isActive = _activeNavIndex == index;
-                  return GestureDetector(
-                    onTap: () => setState(() => _activeNavIndex = index),
-                    child: _NavItem(
-                      assetPath: item['assetPath'] as String,
-                      fallbackIcon: item['fallbackIcon'] as IconData,
-                      label: item['label'] as String,
-                      isActive: isActive,
-                      navy: _navy,
-                      iconColor: isActive ? _white : _navy,
-                      textColor: isActive ? _white : _navy,
-                    ),
-                  );
-                }),
+          if (!_showDetailView)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 110,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: List.generate(navItems.length, (index) {
+                    final item = navItems[index];
+                    final bool isActive = _activeNavIndex == index;
+                    return GestureDetector(
+                      onTap: () => setState(() => _activeNavIndex = index),
+                      child: _NavItem(
+                        assetPath: item['assetPath'] as String,
+                        fallbackIcon: item['fallbackIcon'] as IconData,
+                        label: item['label'] as String,
+                        isActive: isActive,
+                        navy: _navy,
+                        iconColor: isActive ? _white : _navy,
+                        textColor: isActive ? _white : _navy,
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
-          ),
 
           // ── Icône SpaBoost ──
           Positioned(
@@ -367,7 +376,7 @@ class _SpaBoostSecondPageState extends State<SpaBoostSecondPage> {
       case 3:
         return const SizedBox.shrink(); // Retrait
       case 4:
-        return const SizedBox.shrink(); // Parrainage
+        return const ParrainagePage(); // Parrainage
       default:
         return _buildAccueilContent();
     }

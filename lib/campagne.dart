@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'annonce.dart';
+import 'creat.dart';
+import 'promotion.dart';
 
 class CampagneContent extends StatefulWidget {
-  const CampagneContent({super.key});
+  final Function(bool)? onDetailViewChanged;
+
+  const CampagneContent({super.key, this.onDetailViewChanged});
 
   @override
   State<CampagneContent> createState() => _CampagneContentState();
@@ -37,13 +41,13 @@ class _CampagneContentState extends State<CampagneContent> {
   Widget _buildTabContent() {
     switch (_activeTabIndex) {
       case 0:
-        return const AnnonceContent();
+        return AnnonceContent(onDetailViewChanged: widget.onDetailViewChanged);
       case 1:
-        return const SizedBox.shrink(); // Promotion (à implémenter)
+        return const PromotionContent();
       case 2:
-        return const SizedBox.shrink(); // Création (à implémenter)
+        return const CreatContent();
       default:
-        return const AnnonceContent();
+        return AnnonceContent(onDetailViewChanged: widget.onDetailViewChanged);
     }
   }
 
